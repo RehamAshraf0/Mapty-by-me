@@ -23,6 +23,12 @@ class Running extends Workout {
   constructor(distance, duration, cadence) {
     super(distance, duration);
     this.cadence = cadence;
+
+    this._calcPace();
+  }
+
+  _calcPace() {
+    this.pace = this.duration / this.distance;
   }
 }
 
@@ -31,6 +37,12 @@ class Cycling extends Workout {
   constructor(distance, duration, elevGain) {
     super(distance, duration);
     this.elevGain = elevGain;
+
+    this._calcSpeed();
+  }
+
+  _calcSpeed() {
+    this.speed = this.distance / (this.duration / 60);
   }
 }
 
@@ -96,6 +108,8 @@ const App = class {
       workout = new Cycling(distance, duration, elevGain);
     }
     // render workout on list
+
+    this._renderWorkoutOnList();
     // render workout on map
     // remove form
   }
