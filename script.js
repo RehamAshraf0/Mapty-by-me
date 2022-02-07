@@ -67,12 +67,14 @@ const App = class {
   #mapEvent;
   map;
   #workouts = [];
+  zoomLevel = 13;
 
   constructor() {
     this._findLocation();
 
     inputType.addEventListener("change", this._toggleElevField);
     form.addEventListener("submit", this._newWorkout.bind(this));
+    containerWorkouts.addEventListener("click", this._moveTo.bind(this));
 
     this._getLocalStorage();
   }
@@ -88,9 +90,8 @@ const App = class {
   _renderMap(position) {
     const { latitude: lat, longitude: lng } = position.coords;
     const coords = [lat, lng];
-    const zoomLevel = 13;
 
-    this.map = L.map("map").setView(coords, zoomLevel);
+    this.map = L.map("map").setView(coords, this.zoomLevel);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution:
@@ -270,6 +271,18 @@ const App = class {
     this.#workouts.forEach((work) => {
       this._renderWorkoutOnList(work);
     });
+  }
+
+  _moveTo(e) {
+    const work = e.target.closest(".workout");
+
+    if (!work) return;
+
+    const el = this.#workouts.find(
+      (workout) => workout.id === +work.dataset.id
+    );
+
+    this.map.setView(el.coords, this.zoomLevel);
   }
 };
 
